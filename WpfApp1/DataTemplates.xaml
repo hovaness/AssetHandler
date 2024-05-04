@@ -1,0 +1,159 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <DataTemplate x:Key="Cash">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Сумма"/>
+            <TextBox x:Name="amount" Grid.Column="1" Grid.Row="0" Text="{Binding Amount}"/>
+            <Label Grid.Column="0" Grid.Row="1" Content="Валюта"/>
+            <ComboBox x:Name="curr" SelectedIndex="0" Grid.Column="1" Grid.Row="1" Text="{Binding Currency}">
+                <ComboBoxItem>$</ComboBoxItem>
+                <ComboBoxItem>₽</ComboBoxItem>
+                <ComboBoxItem>€</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Bank">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Сумма"/>
+            <TextBox x:Name="amount" Grid.Column="1" Grid.Row="0" Text="{Binding Amount}"/>
+            <Label Grid.Column="0" Grid.Row="1" Content="Валюта"/>
+            <ComboBox x:Name="curr" SelectedIndex="0" Grid.Column="1" Grid.Row="1" Text="{Binding Currency}">
+                <ComboBoxItem>$</ComboBoxItem>
+                <ComboBoxItem>₽</ComboBoxItem>
+                <ComboBoxItem>€</ComboBoxItem>
+            </ComboBox>
+            <Label Grid.Column="0" Grid.Row="2" Content="Банк"/>
+            <TextBox x:Name="bank" Grid.Column="1" Grid.Row="2" Text="{Binding Bank}"/>
+            <Label Grid.Column="0" Grid.Row="3" Content="Счет"/>
+            <TextBox x:Name="bill" Grid.Column="1" Grid.Row="3" Text="{Binding Bill}"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Different">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Сумма"/>
+            <TextBox x:Name="amount" Grid.Column="1" Grid.Row="0" Text="{Binding Amount}"/>
+            <Label Grid.Column="0" Grid.Row="1" Content="Валюта"/>
+            <ComboBox x:Name="curr" SelectedIndex="0" Grid.Column="1" Grid.Row="1" Text="{Binding Currency}">
+                <ComboBoxItem>$</ComboBoxItem>
+                <ComboBoxItem>₽</ComboBoxItem>
+                <ComboBoxItem>€</ComboBoxItem>
+            </ComboBox>
+            <Label Grid.Column="0" Grid.Row="2" Content="Актив"/>
+            <TextBox x:Name="holding" Grid.Column="1" Grid.Row="2" Text="{Binding Holding}"/>
+            <Label Grid.Column="0" Grid.Row="3" Content="Владелец"/>
+            <TextBox x:Name="owner" Grid.Column="1" Grid.Row="3" Text="{Binding Owner}"/>
+        </Grid>
+    </DataTemplate>
+        
+    <DataTemplate x:Key="Inventory">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Content="Тип:" />
+            <TextBox Grid.Column="1" x:Name="type" Grid.Row="0" Text="{Binding Type}" />
+
+            <Label Grid.Column="0" Grid.Row="1" Content="Количество:" />
+            <TextBox Grid.Column="1" x:Name="quantity" Grid.Row="1" Text="{Binding Quantity}" />
+
+            <Label Grid.Column="0" Grid.Row="2" Content="Единица измерения:" />
+            <TextBox Grid.Column="1" x:Name="unit" Grid.Row="2" Text="{Binding Unit}" />
+
+            <Label Grid.Column="0" Grid.Row="3" Content="Начальная стоимость:" />
+            <TextBox Grid.Column="1" x:Name="init" Grid.Row="3" Text="{Binding InitialValue}" />
+
+            <Label Grid.Column="0" Grid.Row="4" Content="Рыночная стоимость:" />
+            <TextBox Grid.Column="1" x:Name="market" Grid.Row="4" Text="{Binding MarcetValue}" />
+            <Label Grid.Column="0" Grid.Row="5" Content="Валюта"/>
+            <ComboBox x:Name="curr" SelectedIndex="0" Grid.Column="1" Grid.Row="5" Text="{Binding Currency}">
+                <ComboBoxItem>$</ComboBoxItem>
+                <ComboBoxItem>₽</ComboBoxItem>
+                <ComboBoxItem>€</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="RealEstate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Content="Адрес:" />
+            <TextBox Grid.Column="1" x:Name="addres" Grid.Row="0" Text="{Binding Adress}" />
+
+            <Label Grid.Column="0" Grid.Row="1" Content="Год постройки:" />
+            <TextBox Grid.Column="1" x:Name="year" Grid.Row="1" Text="{Binding ConstructionYear}" />
+
+            <Label Grid.Column="0" Grid.Row="2" Content="Тип постройки:" />
+            <TextBox Grid.Column="1" x:Name="construction" Grid.Row="2" Text="{Binding ConstructionType}" />
+
+            <Label Grid.Column="0" Grid.Row="3" Content="Инвентарный номер:" />
+            <TextBox Grid.Column="1" x:Name="number" Grid.Row="3" Text="{Binding InventoryNumber}" />
+
+            <Label Grid.Column="0" Grid.Row="4" Content="Начальная стоимость:" />
+            <TextBox Grid.Column="1" x:Name="init" Grid.Row="4" Text="{Binding InitialValue}" />
+
+            <Label Grid.Column="0" Grid.Row="5" Content="Рыночная стоимость:" />
+            <TextBox Grid.Column="1" x:Name="market" Grid.Row="5" Text="{Binding MarketValue}" />
+            
+            <Label Grid.Column="0" Grid.Row="6" Content="Валюта"/>
+            <ComboBox x:Name="curr" SelectedIndex="0" Grid.Column="1" Grid.Row="6" Text="{Binding Currency}">
+                <ComboBoxItem>$</ComboBoxItem>
+                <ComboBoxItem>₽</ComboBoxItem>
+                <ComboBoxItem>€</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

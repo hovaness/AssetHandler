@@ -1,0 +1,34 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="Окно активов" Height="450" Width="800">
+    <Grid Background="Gainsboro">
+
+        <Border CornerRadius="20" MaxWidth ="650"  MinWidth="500" Margin="15" Background="White" VerticalAlignment="Center" Padding="30">
+            <StackPanel>
+                <Label Margin="0 0 0 20" FontSize="25" Foreground="Black">Активы</Label>
+                <Grid Margin="0 0 0 20">
+                    <Button Background="ForestGreen" Height="30" Width="60" Content="Добавить" HorizontalAlignment="Left" Style="{StaticResource RoundButton}" Click="Button_Click"/>
+                    <Button Background="DarkOrange" Height="30" Width="60" Content="Изменить" HorizontalAlignment="Center" Style="{StaticResource RoundButton}" Click="Button_Click_2"/>
+
+                    <Button Height="30" Width="60" Content="Удалить" HorizontalAlignment="Right" Style="{StaticResource RoundButton}" Background="#FFD42A2A" Click="Button_Click_1"/>
+                </Grid>
+                <ListView  x:Name="assetsList">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <WrapPanel>
+                                <TextBlock Text="{Binding Name}"></TextBlock>
+                            </WrapPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Border>
+        
+    </Grid>
+
+</Window>
