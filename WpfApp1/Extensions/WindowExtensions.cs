@@ -10,8 +10,21 @@ using AssetsHandler.Models;
 
 namespace WpfApp1.Extensions
 {
+ 
+
     public static class WindowExtensions
     {
+        public static bool IsAnyStringEmptyOrNull(this Window window, params string[] strings)
+        {
+            foreach (string str in strings)
+            {
+                if (string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public static T FindVisualChild<T>(this Window window, string name) where T : DependencyObject
         {
             return FindVisualChild<T>((DependencyObject)window, name);
@@ -62,11 +75,11 @@ namespace WpfApp1.Extensions
                     return window.Resources["Cash"] as DataTemplate;
                 case "BankMoney":
                     return window.Resources["Bank"] as DataTemplate;
-                case "DifferentMoney":
+                case "DiffrentMoney":
                     return window.Resources["Different"] as DataTemplate;
                 case "RealEstate":
                     return window.Resources["RealEstate"] as DataTemplate;
-                case "Indentory":
+                case "Inventory":
                     return window.Resources["Inventory"] as DataTemplate;
                 default:
                     return null;

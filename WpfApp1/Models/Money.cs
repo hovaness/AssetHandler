@@ -29,7 +29,7 @@ namespace AssetsHandler.Models
 
         public string Currency
         {
-            get { return _currency; }
+            get { return _currency.ToString(); }
             set { _currency = value; }
         }
 

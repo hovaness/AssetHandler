@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-
-        Title="ChangeWindow" Height="450" Width="800">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="ChangeWindow" Height="500" Width="800">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,15 +15,14 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="Gainsboro">
-        <Border CornerRadius="20" MaxWidth ="650"  MinWidth="500" Margin="15" Background="White" VerticalAlignment="Center" Padding="30">
+        <Border CornerRadius="20" Height="Auto" MaxWidth ="650"  MinWidth="500" Margin="15" Background="White" VerticalAlignment="Center" Padding="30">
             <StackPanel>
                 <Grid>
                     <Label HorizontalAlignment="Left" Margin="0 0 0 20" FontSize="20" Foreground="Black">Изменение актива</Label>
-                    
-                    <Label x:Name="typeName" HorizontalAlignment="Right" FontSize="20" Foreground="Black">Тип</Label>
+                    <Label  x:Name="typeName" HorizontalAlignment="Right" FontSize="20" Foreground="Black">Тип</Label>
                 </Grid>
-
-                <ContentControl x:Name="control" Grid.Column="0" Grid.Row="0"/>
+                <Button Margin="5 0 0 0"  Height="30" Width="120" Content="Загрузить данные" HorizontalAlignment="Left" Click="GetInfo" BorderBrush="{x:Null}" Background="#FF297CEC" Foreground="White"/>
+                <ContentControl x:Name="control" Grid.Column="0" Grid.Row="0" Content="{Binding Asset}"/>
                 <Button Margin="0 20 0 0" Background="DarkOrange" Height="30" Width="60" Content="Изменить" HorizontalAlignment="Center" Style="{StaticResource RoundButton}" Click="Button_Click_2"/>
 
             </StackPanel>

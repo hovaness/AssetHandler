@@ -30,10 +30,14 @@ namespace WpfApp1
         {
             InitializeComponent();
             
-            var money1 = new Money(100m, "долларов");
-            var money2 = new Money(1002m, "рублей");
+            var money1 = new Money(100m, "$");
+            var bank = new BankMoney(100m, "$", "Sber", 12);
+            var bread = new DiffrentMoney(100m, "$", "хлеб", "ИжГТУ");
+            var invent = new Inventory("Бревна", "кг", "$", 120, 120m, 140m);
             assets.Add(money1);
-            assets.Add(money2);
+            assets.Add(bank);
+            assets.Add(bread);
+            assets.Add(invent);
             assetsList.ItemsSource = assets;
         }
 
@@ -64,7 +68,7 @@ namespace WpfApp1
             if(item!= null)
             {
                 var change = new ChangeWindow(item);
-                change.Show();
+                change.ShowDialog();
             }
         }
     }

@@ -19,7 +19,7 @@
             <StackPanel>
                 <Label Margin="0 0 0 20" FontSize="25" Foreground="Black">Добавление актива</Label>
                 <Label Grid.Row="0" Grid.Column="0" Content="Тип актива:" />
-                <ComboBox Grid.Row="0" Grid.Column="1" x:Name="assetTypeComboBox" SelectedIndex ="1"  SelectionChanged="assetTypeComboBox_SelectionChanged">
+                <ComboBox Grid.Row="0" Grid.Column="1" x:Name="assetTypeComboBox" SelectedIndex ="0"  SelectionChanged="assetTypeComboBox_SelectionChanged">
                     <ComboBoxItem>Деньги</ComboBoxItem>
                     <ComboBoxItem>Банковский счет</ComboBoxItem>
                     <ComboBoxItem>Твердый номинал</ComboBoxItem>

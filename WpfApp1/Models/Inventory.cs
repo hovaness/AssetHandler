@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AssetsHandler.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,14 +40,6 @@ namespace WpfApp1.Models
             }
         }
 
-        public string Currency
-        {
-            get { return _currency; }
-            set
-            {
-                _currency = value;
-            }
-        }
 
         public decimal InitialValue
         {
@@ -71,13 +64,19 @@ namespace WpfApp1.Models
             get { return GetResidualValue(); }
         }
 
+        public  string  Currency
+        {
+            get { return _currency; }
+            set { _currency = value; }
+        }
+
 
         public string Name
         {
             get { return GetName(); }
         }
 
-        public Inventory(string type, string unit, string currency, int quantity, decimal init, decimal market) {
+        public Inventory(string type, string unit,string currency, int quantity, decimal init, decimal market) {
             _type = type;
             _unit = unit;
             _quantity = quantity;

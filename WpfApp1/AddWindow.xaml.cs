@@ -45,11 +45,12 @@ namespace WpfApp1
         private TextBox typeText;
         private TextBox unitText;
         private TextBox quantityText;
-
+        private const string NOTNULL = "Не должно быть пустых полей!";
         //интерфейс
         public AddWindow()
         {
             InitializeComponent();
+
             control.ContentTemplate = this.GetDataTemplate(0);
         }
 
@@ -81,22 +82,20 @@ namespace WpfApp1
             unitText = this.FindVisualChild<TextBox>("unit"); 
             quantityText = this.FindVisualChild<TextBox>("quantity");
         }
-        private void checkNullProperties(int typeIndex)
-        {
-
-        }
         private void assetTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int type = assetTypeComboBox.SelectedIndex;
             changeControl(this.GetDataTemplate(type));
         }
 
+        
+
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int type = assetTypeComboBox.SelectedIndex;
-            InitializeAllDynamicControls();
             //базовые поля для денежных типов
-            
+            InitializeAllDynamicControls();
+
             string curr = currText.Text;
 
             //базовые поля для неденежных типов
@@ -106,48 +105,79 @@ namespace WpfApp1
             {
                 //денежные активы
                 case 0:
-                    decimal amount = decimal.Parse(amountText.Text);
-                    newAsset = new Money(amount, curr);
+                    if (!this.IsAnyStringEmptyOrNull(amountText.Text, curr))
+                    {
+                        decimal amount = decimal.Parse(amountText.Text);
+                        newAsset = new Money(amount, curr);
+                        MainWindow.assets.Add(newAsset);
+                        Hide();
+                    }
+                    else MessageBox.Show(NOTNULL);
                     break;
                 //банковские счета
                 case 1:
-                    decimal amountBank = decimal.Parse(amountText.Text);
-                    string bank = bankText.Text;
-                    int bill = int.Parse(billText.Text);
-                    newAsset = new BankMoney(amountBank, curr,bank,bill);
+                   
+                    if(!this.IsAnyStringEmptyOrNull(amountText.Text, curr,bankText.Text, billText.Text)){
+                        decimal amount = decimal.Parse(amountText.Text);
+                        string bank = bankText.Text;
+                        int bill = int.Parse(billText.Text);
+                        newAsset = new BankMoney(amount, curr,bank,bill);
+                        MainWindow.assets.Add(newAsset);
+                        Hide();
+                    }
+                    else MessageBox.Show(NOTNULL);
                     break;
                 //другие активы
                 case 2:
-                    decimal amountDiff = decimal.Parse(amountText.Text);
-                    string asset = assetText.Text;
-                    string owner = ownerText.Text;
-                    newAsset = new DiffrentMoney(amountDiff,curr,asset,owner);
+                    if(!this.IsAnyStringEmptyOrNull(amountText.Text, assetText.Text, curr, ownerText.Text))
+                    {
+                        decimal amount = decimal.Parse(amountText.Text);
+                        string asset = assetText.Text;
+                        string owner = ownerText.Text;
+                        newAsset = new DiffrentMoney(amount,curr,asset,owner);
+                        MainWindow.assets.Add(newAsset);
+                        Hide();
+                    }
+                    else MessageBox.Show(NOTNULL);
                     break;
                 //Недвижимость
                 case 3:
-                    decimal initEstate = decimal.Parse(initialText.Text);
-                    decimal marcet = decimal.Parse(marketText.Text);
-                    int year = int.Parse(constructionYearText.Text);
-                    string addres = addresText.Text;
-                    string constructType = constructionTypeText.Text;
-                    int number = int.Parse(numberText.Text);
-                    newAsset = new RealEstate(addres,constructType,curr,
-                        year, number, initEstate,marcet);
+                    
+                    if(!this.IsAnyStringEmptyOrNull(initialText.Text, marketText.Text, constructionYearText.Text, addresText.Text,
+                        constructionTypeText.Text, numberText.Text, curr))
+                    {
+                        decimal init = decimal.Parse(initialText.Text);
+                        decimal marcet = decimal.Parse(marketText.Text);
+                        int year = int.Parse(constructionYearText.Text);
+                        string addres = addresText.Text;
+                        string constructType = constructionTypeText.Text;
+                        int number = int.Parse(numberText.Text);
+                        newAsset = new RealEstate(addres,constructType,curr,
+                            year, number, init,marcet);
+                        MainWindow.assets.Add(newAsset);
+                        Hide();
+                    }
+                    else MessageBox.Show(NOTNULL);
                     break;
                 //Инвентарь
                 case 4:
-                    decimal initInventory = decimal.Parse(initialText.Text);
-                    decimal marcet1 = decimal.Parse(marketText.Text);
-                    int quantity = int.Parse(quantityText.Text);
-                    string unit = unitText.Text;
-                    string inventoryType = typeText.Text;
-                    newAsset = new Inventory(inventoryType,unit,curr,quantity, initInventory,marcet1);
+                    
+                    if(!this.IsAnyStringEmptyOrNull(initialText.Text, marketText.Text, curr, quantityText.Text,unitText.Text, typeText.Text))
+                    {
+                        decimal init = decimal.Parse(initialText.Text);
+                        decimal marcet = decimal.Parse(marketText.Text);
+                        int quantity = int.Parse(quantityText.Text);
+                        string unit = unitText.Text;
+                        string inventoryType = typeText.Text;
+                        newAsset = new Inventory(inventoryType,unit,curr,quantity, init,marcet);
+                        MainWindow.assets.Add(newAsset);
+                        Hide();
+                    }
+                    else MessageBox.Show(NOTNULL);
                     break;
                 default:
                     return;
             }
-            MainWindow.assets.Add(newAsset);
-            Hide();
         }
     }
 }

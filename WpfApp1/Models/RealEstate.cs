@@ -40,14 +40,6 @@ namespace WpfApp1.Models
             set { _addres = value; }
         }
 
-        public string Currency
-        {
-            get { return _currency; }
-            set
-            {
-                _currency = value;
-            }
-        }
 
         public decimal InitialValue
         {
@@ -70,6 +62,12 @@ namespace WpfApp1.Models
         public decimal ResidualValue
         {
             get { return GetResidualValue(); }
+        }
+
+        public string Currency
+        {
+            get { return _currency; }
+            set { _currency = value; }
         }
 
         public string Name
