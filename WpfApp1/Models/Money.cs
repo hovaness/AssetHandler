@@ -8,7 +8,6 @@ namespace AssetsHandler.Models
 {
     internal class Money : Asset
     {
-
         public string Name
         {
             get { return GetName(); }
@@ -33,15 +32,12 @@ namespace AssetsHandler.Models
             set { _currency = value; }
         }
 
-        
-
         //Констурктор для денег, которые лежат на кассе
         public Money(decimal amount, string currency)
         {
             _amount = amount;
             _currency = currency;
         }
-        
 
         public override string GetName()
         {

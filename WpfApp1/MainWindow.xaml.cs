@@ -1,4 +1,5 @@
 ﻿using AssetsHandler.Models;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApp1.Models;
+using WpfApp1.Repositories;
 
 namespace WpfApp1
 {
@@ -24,40 +26,67 @@ namespace WpfApp1
     
     public partial class MainWindow : Window
     {
-        public static ObservableCollection<Asset> assets = new ObservableCollection<Asset>();
+        //лист для хранения всех типов активов
+        //репозитории
+        private MoneyAssetRepository moneyAssetRepository;
+        private BankMoneyAssetRepository bankMoneyAssetRepository;
+        private DifferentMoneyAssetRepository differentMoneyAssetRepository;
+
+        public CollectionViewSource collectionViewSource = new CollectionViewSource();
+
+        private DbContext dbContext;
+        string connectionString = "Server=localhost;Port=5433;Database=test;User Id=postgres;Password=12345;";
 
         public MainWindow()
         {
             InitializeComponent();
-            
-            var money1 = new Money(100m, "$");
-            var bank = new BankMoney(100m, "$", "Sber", 12);
-            var bread = new DiffrentMoney(100m, "$", "хлеб", "ИжГТУ");
-            var invent = new Inventory("Бревна", "кг", "$", 120, 120m, 140m);
-            assets.Add(money1);
-            assets.Add(bank);
-            assets.Add(bread);
-            assets.Add(invent);
-            assetsList.ItemsSource = assets;
+            dbContext = new DbContext(connectionString);
+            moneyAssetRepository = new MoneyAssetRepository(dbContext);
+            bankMoneyAssetRepository = new BankMoneyAssetRepository(dbContext);
+            differentMoneyAssetRepository = new DifferentMoneyAssetRepository(dbContext);
+            UpdateAssetList();
         }
+
+        public void UpdateAssetList()
+        {
+            collectionViewSource.Source = new CompositeCollection()
+            {
+                new CollectionContainer() { Collection = moneyAssetRepository.GetAllAssets() },
+                new CollectionContainer() { Collection = bankMoneyAssetRepository.GetAllAssets() },
+                new CollectionContainer() { Collection = differentMoneyAssetRepository.GetAllAssets()},
+            };
+            assetsList.ItemsSource = collectionViewSource.View;
+        }
+
+        //assetsList.ItemsSource = assets;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //AddWindow add = new AddWindow
             var add = new AddWindow();
-            add.Show();
+            Hide();
+            add.ShowDialog();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Asset item = (Asset)assetsList.SelectedItem;
+            var item = (Asset)assetsList.SelectedItem;
             if(item == null)
             {
                 return;
             }
             if (MessageBox.Show($"Вы уверены что хотите удалить актив {item.GetName()}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                assets.Remove(item);
+                if (item is BankMoney)
+                    bankMoneyAssetRepository.DeleteAsset(item.Id);
+
+                else if(item is DiffrentMoney)
+                    differentMoneyAssetRepository.DeleteAsset(item.Id);
+
+                else if(item is Money)
+                    moneyAssetRepository.DeleteAsset(item.Id);
+
+                UpdateAssetList();
             }
             else return;
         }
@@ -68,8 +97,10 @@ namespace WpfApp1
             if(item!= null)
             {
                 var change = new ChangeWindow(item);
+                Hide();
                 change.ShowDialog();
             }
         }
+
     }
 }

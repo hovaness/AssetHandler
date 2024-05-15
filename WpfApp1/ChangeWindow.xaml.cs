@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using WpfApp1.Extensions;
 using WpfApp1.Models;
+using WpfApp1.Repositories;
 
 namespace WpfApp1
 {
@@ -39,12 +40,22 @@ namespace WpfApp1
         public Asset Asset { get { return asset; } }
         private const string NOTNULL = "Не должно быть пустых полей!";
 
+        private MoneyAssetRepository _moneyAssetRepository;
+        private BankMoneyAssetRepository _bankMoneyAssetRepository;
+        private DifferentMoneyAssetRepository _differentMoneyAssetRepository;
+        private DbContext dbContext;
+        string connectionString = "Server=localhost;Port=5433;Database=test;User Id=postgres;Password=12345;";
+
         public ChangeWindow(Asset asset)
         {
             InitializeComponent();
             this.asset = asset;
             control.ContentTemplate = this.GetDataTemplate(asset);
             SetTypeName();
+            dbContext = new DbContext(connectionString);
+            _moneyAssetRepository = new MoneyAssetRepository(dbContext);
+            _bankMoneyAssetRepository = new BankMoneyAssetRepository(dbContext);
+            _differentMoneyAssetRepository = new DifferentMoneyAssetRepository(dbContext);
         }
         
         private void SetTypeName()
@@ -80,17 +91,18 @@ namespace WpfApp1
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             Asset updated;
-            if(asset is RealAsset)
+            var main = new MainWindow();
+            if (asset is RealAsset)
             {
                 if(asset is RealEstate)
                 {
                     if (!this.IsAnyStringEmptyOrNull(initialText.Text, marketText.Text, constructionYearText.Text, addresText.Text,
                         constructionTypeText.Text, numberText.Text, currText.Text))
                     {
-                        MainWindow.assets.Remove(asset);
+                        //MainWindow.assets.Remove(asset);
                         updated = new RealEstate(addresText.Text, constructionTypeText.Text, currText.Text, int.Parse(constructionYearText.Text),
                             int.Parse(numberText.Text), decimal.Parse(initialText.Text), decimal.Parse(marketText.Text));
-                        MainWindow.assets.Add(updated);
+                        //MainWindow.assets.Add(updated);
                         Hide();
                     }
                     else
@@ -100,10 +112,10 @@ namespace WpfApp1
                 {
                     if(!this.IsAnyStringEmptyOrNull(initialText.Text, marketText.Text, unitText.Text, quantityText.Text, typeText.Text, currText.Text))
                     {
-                        MainWindow.assets.Remove(asset);
+                        //MainWindow.assets.Remove(asset);
                         updated = new Inventory(typeText.Text, unitText.Text, currText.Text, int.Parse(quantityText.Text),
                             decimal.Parse(initialText.Text), decimal.Parse(marketText.Text));
-                        MainWindow.assets.Add(updated);
+                        //MainWindow.assets.Add(updated);
                         Hide();
                     }
                     else
@@ -116,21 +128,27 @@ namespace WpfApp1
                 {
                     if(!this.IsAnyStringEmptyOrNull(amountText.Text, currText.Text, bankText.Text, billText.Text))
                     {
-                        MainWindow.assets[MainWindow.assets.IndexOf(asset)] = new BankMoney(decimal.Parse(amountText.Text), currText.Text,
-                        bankText.Text, int.Parse(billText.Text));
+                        updated = new BankMoney(decimal.Parse(amountText.Text), currText.Text, bankText.Text, int.Parse(billText.Text));
+                        updated.Id = asset.Id;
+                        _bankMoneyAssetRepository.UpdateAsset(updated);
                         Hide();
+                        main.UpdateAssetList();
+                        main.ShowDialog();
                     }
                     else
                         MessageBox.Show(NOTNULL);
                 }
                 else if(asset is DiffrentMoney)
                 {
-                    if (!this.IsAnyStringEmptyOrNull(amountText.Text, currText.Text,bankText.Text, billText.Text))
+                    if (!this.IsAnyStringEmptyOrNull(amountText.Text, currText.Text,assetText.Text, ownerText.Text))
                     {
-                        MainWindow.assets.Remove(asset);
                         updated = new DiffrentMoney(decimal.Parse(amountText.Text), currText.Text, assetText.Text, ownerText.Text);
-                        MainWindow.assets.Add(updated);
+                        updated.Id = asset.Id;
+                       
+                        _differentMoneyAssetRepository.UpdateAsset(updated);
                         Hide();
+                        main.UpdateAssetList();
+                        main.ShowDialog();
                     }
                     else
                         MessageBox.Show(NOTNULL);
@@ -139,10 +157,13 @@ namespace WpfApp1
                 {
                     if(!this.IsAnyStringEmptyOrNull(amountText.Text, currText.Text))
                     {
-                        MainWindow.assets.Remove(asset);
                         updated = new Money(decimal.Parse(amountText.Text), currText.Text);
-                        MainWindow.assets.Add(updated);
+                        updated.Id = asset.Id;
+                        _moneyAssetRepository.UpdateAsset(updated);
+                        //MessageBox.Show(updated.Id.ToString());
                         Hide();
+                        main.UpdateAssetList();
+                        main.ShowDialog();
                     }
                     else
                         MessageBox.Show(NOTNULL);
@@ -219,8 +240,6 @@ namespace WpfApp1
                     var temp = (Money)asset;
                     amountText.Text = temp.Amount.ToString();
                     currText.Text = temp.Currency;
-                    MessageBox.Show(currText.Text);
-
                 }
             }
         }

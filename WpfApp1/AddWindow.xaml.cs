@@ -1,4 +1,5 @@
 ﻿using AssetsHandler.Models;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WpfApp1.Extensions;
 using WpfApp1.Models;
+using WpfApp1.Repositories;
 
 namespace WpfApp1
 {
@@ -46,11 +48,21 @@ namespace WpfApp1
         private TextBox unitText;
         private TextBox quantityText;
         private const string NOTNULL = "Не должно быть пустых полей!";
-        //интерфейс
+
+        //репозитории
+        private MoneyAssetRepository _moneyAssetRepository;
+        private BankMoneyAssetRepository _bankMoneyAssetRepository;
+        private DifferentMoneyAssetRepository _differentMoneyAssetRepository;
+        //база данных
+        private DbContext dbContext;
+        string connectionString = "Server=localhost;Port=5433;Database=test;User Id=postgres;Password=12345;";
         public AddWindow()
         {
             InitializeComponent();
-
+            dbContext = new DbContext(connectionString);
+            _moneyAssetRepository = new MoneyAssetRepository(dbContext);
+            _bankMoneyAssetRepository = new BankMoneyAssetRepository(dbContext);
+            _differentMoneyAssetRepository = new DifferentMoneyAssetRepository(dbContext);
             control.ContentTemplate = this.GetDataTemplate(0);
         }
 
@@ -62,7 +74,6 @@ namespace WpfApp1
             }
             else return;
         }
-
 
         private void InitializeAllDynamicControls()
         {
@@ -88,8 +99,6 @@ namespace WpfApp1
             changeControl(this.GetDataTemplate(type));
         }
 
-        
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int type = assetTypeComboBox.SelectedIndex;
@@ -97,20 +106,23 @@ namespace WpfApp1
             InitializeAllDynamicControls();
 
             string curr = currText.Text;
-
+            var main = new MainWindow();
             //базовые поля для неденежных типов
-            
+
             Asset newAsset;
             switch (type)
             {
                 //денежные активы
                 case 0:
+                    
                     if (!this.IsAnyStringEmptyOrNull(amountText.Text, curr))
                     {
                         decimal amount = decimal.Parse(amountText.Text);
                         newAsset = new Money(amount, curr);
-                        MainWindow.assets.Add(newAsset);
+                        _moneyAssetRepository.AddAsset(newAsset);
                         Hide();
+                        main.UpdateAssetList();
+                        main.ShowDialog();
                     }
                     else MessageBox.Show(NOTNULL);
                     break;
@@ -122,8 +134,10 @@ namespace WpfApp1
                         string bank = bankText.Text;
                         int bill = int.Parse(billText.Text);
                         newAsset = new BankMoney(amount, curr,bank,bill);
-                        MainWindow.assets.Add(newAsset);
+                        _bankMoneyAssetRepository.AddAsset(newAsset);
                         Hide();
+                        main.UpdateAssetList();
+                        main.ShowDialog();
                     }
                     else MessageBox.Show(NOTNULL);
                     break;
@@ -135,8 +149,10 @@ namespace WpfApp1
                         string asset = assetText.Text;
                         string owner = ownerText.Text;
                         newAsset = new DiffrentMoney(amount,curr,asset,owner);
-                        MainWindow.assets.Add(newAsset);
+                        _differentMoneyAssetRepository.AddAsset(newAsset);
                         Hide();
+                        main.UpdateAssetList(); 
+                        main.ShowDialog();
                     }
                     else MessageBox.Show(NOTNULL);
                     break;
@@ -154,7 +170,7 @@ namespace WpfApp1
                         int number = int.Parse(numberText.Text);
                         newAsset = new RealEstate(addres,constructType,curr,
                             year, number, init,marcet);
-                        MainWindow.assets.Add(newAsset);
+                        //MainWindow.assets.Add(newAsset);
                         Hide();
                     }
                     else MessageBox.Show(NOTNULL);
@@ -170,7 +186,7 @@ namespace WpfApp1
                         string unit = unitText.Text;
                         string inventoryType = typeText.Text;
                         newAsset = new Inventory(inventoryType,unit,curr,quantity, init,marcet);
-                        MainWindow.assets.Add(newAsset);
+                        //MainWindow.assets.Add(newAsset);
                         Hide();
                     }
                     else MessageBox.Show(NOTNULL);
