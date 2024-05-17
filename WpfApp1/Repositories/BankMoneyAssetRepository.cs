@@ -1,16 +1,12 @@
 ﻿using AssetsHandler.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WpfApp1.Models;
 
 namespace WpfApp1.Repositories 
 {
+    //Класс наследник AssetRepository, отвечает за работу с банковскими активами
     public class BankMoneyAssetRepository : AssetRepository
     {
-        private DbContext _dbContext;
 
         public BankMoneyAssetRepository(DbContext dbContext)
         {
@@ -95,11 +91,9 @@ namespace WpfApp1.Repositories
         {
             string updateAssetQuery = "UPDATE Assets SET Type = @Type " +
                               "WHERE Id = @Id";
-
             string updateCashQuery = "UPDATE bankAssets SET Amount = @Amount, Currency = @Currency, " +
                                      "Bank = @Bank, Bill = @Bill " +
                                      "WHERE AssetId = @AssetId";
-
             _dbContext.BeginTransaction();
             try
             {

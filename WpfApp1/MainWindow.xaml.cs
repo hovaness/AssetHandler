@@ -26,27 +26,32 @@ namespace WpfApp1
     
     public partial class MainWindow : Window
     {
-        //лист для хранения всех типов активов
-        //репозитории
+        //репозитории всех видов активов
         private MoneyAssetRepository moneyAssetRepository;
         private BankMoneyAssetRepository bankMoneyAssetRepository;
         private DifferentMoneyAssetRepository differentMoneyAssetRepository;
+        private InventoryAssetRepository inventoryAssetRepository;
+        private RealEstateAssetRepository realEstateAssetRepository;
 
+        //общий лист со всеми активами
         public CollectionViewSource collectionViewSource = new CollectionViewSource();
 
+        //контекст базы данных со строкой подключения
         private DbContext dbContext;
-        string connectionString = "Server=localhost;Port=5433;Database=test;User Id=postgres;Password=12345;";
 
         public MainWindow()
         {
             InitializeComponent();
-            dbContext = new DbContext(connectionString);
+            dbContext = new DbContext();
             moneyAssetRepository = new MoneyAssetRepository(dbContext);
             bankMoneyAssetRepository = new BankMoneyAssetRepository(dbContext);
             differentMoneyAssetRepository = new DifferentMoneyAssetRepository(dbContext);
+            inventoryAssetRepository = new InventoryAssetRepository(dbContext);
+            realEstateAssetRepository = new RealEstateAssetRepository(dbContext);
             UpdateAssetList();
         }
 
+        //метод используется для обновления листа с активами, после выполнения каких либо CRUD-операций
         public void UpdateAssetList()
         {
             collectionViewSource.Source = new CompositeCollection()
@@ -54,20 +59,22 @@ namespace WpfApp1
                 new CollectionContainer() { Collection = moneyAssetRepository.GetAllAssets() },
                 new CollectionContainer() { Collection = bankMoneyAssetRepository.GetAllAssets() },
                 new CollectionContainer() { Collection = differentMoneyAssetRepository.GetAllAssets()},
+                new CollectionContainer(){ Collection = inventoryAssetRepository.GetAllAssets()},
+                new CollectionContainer(){ Collection= realEstateAssetRepository.GetAllAssets()}
             };
             assetsList.ItemsSource = collectionViewSource.View;
         }
 
-        //assetsList.ItemsSource = assets;
-
+        //открывает окно добавления актива
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //AddWindow add = new AddWindow
             var add = new AddWindow();
             Hide();
             add.ShowDialog();
         }
 
+
+        //метод удаления активов с окном подтверждения
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var item = (Asset)assetsList.SelectedItem;
@@ -80,17 +87,23 @@ namespace WpfApp1
                 if (item is BankMoney)
                     bankMoneyAssetRepository.DeleteAsset(item.Id);
 
-                else if(item is DiffrentMoney)
+                else if (item is DiffrentMoney)
                     differentMoneyAssetRepository.DeleteAsset(item.Id);
 
-                else if(item is Money)
+                else if (item is Money)
                     moneyAssetRepository.DeleteAsset(item.Id);
 
+                else if (item is Inventory)
+                    inventoryAssetRepository.DeleteAsset(item.Id);
+
+                else if (item is RealEstate)
+                    realEstateAssetRepository.DeleteAsset(item.Id);
                 UpdateAssetList();
             }
             else return;
         }
 
+        //открывает окно редактирования актива
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             Asset item = (Asset)assetsList.SelectedItem;

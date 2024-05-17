@@ -86,7 +86,7 @@ namespace WpfApp1.Models
             _marcetValue = marcet;
             _residualValue = GetResidualValue();
         }
-
+        //метод для получения остаточной суммы
         public override decimal GetResidualValue()
         {
             return _marcetValue - _initialValue;

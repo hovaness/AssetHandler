@@ -6,18 +6,19 @@ using System.Data.Common;
 
 namespace WpfApp1.Models
 {
+    //Класс который реализует
     public class DbContext
     {
         private NpgsqlConnection _connection;
         private NpgsqlTransaction _transaction;
-        private string _cstring;
+        private string _cstring = "Server=localhost;Port=5433;Database=test;User Id=postgres;Password=12345;";
 
-        public DbContext(string connectionString)
+        public DbContext()
         {
-            _cstring = connectionString;
-            _connection = new NpgsqlConnection(connectionString);
+            _connection = new NpgsqlConnection(_cstring);
         }
 
+        //Метод открывающий соединение
         public void OpenConnection()
         {
             if (_connection.State == ConnectionState.Closed)
@@ -26,6 +27,7 @@ namespace WpfApp1.Models
             }
         }
 
+        //Метод закрывающий соединение
         public void CloseConnection()
         {
             if (_connection.State == ConnectionState.Open)
@@ -33,7 +35,9 @@ namespace WpfApp1.Models
                 _connection.Close();
             }
         }
-        
+
+        //Метод предназначен для выполнения SQL-запросов к базе данных и получения результатов
+        //в виде списка словарей где, каждый словарь представляет одну строку результата.
         public List<Dictionary<string, object>> ExecuteQuery(string query, Dictionary<string, object> parameters = null)
         {
             OpenConnection();
@@ -68,7 +72,8 @@ namespace WpfApp1.Models
             return results;
         }
 
-
+        //Метод Execute используется для выполнения SQL-запросов, которые не возвращают набор данных,
+        //например, запросы на вставку, обновление или удаление данных.
         public void Execute(string query, Dictionary<string, object> parameters = null)
         {
             using (NpgsqlCommand command = new NpgsqlCommand(query, _connection))
@@ -87,7 +92,8 @@ namespace WpfApp1.Models
        /* Этот метод  возвращает результат выполнения SQL-запроса в виде объекта,
         который затем преобразуется в указанный тип T с помощью Convert.ChangeType.Таким образом,
         метод ExecuteScalar позволяет получить скалярное значение из
-        базы данных и привести его к нужному типу данных для дальнейшей обработки.*/
+        базы данных и привести его к нужному типу данных для дальнейшей обработки, например
+        генерация id.*/
         public T ExecuteScalar<T>(string query, Dictionary<string, object> parameters = null)
         {
             using (NpgsqlCommand command = new NpgsqlCommand(query, _connection))
@@ -104,13 +110,15 @@ namespace WpfApp1.Models
                 return (T)Convert.ChangeType(result, typeof(T));
             }
         }
-
+        //Метод предназначен для начала какой-либо транзакии.
         public void BeginTransaction()
         {
             OpenConnection();
             _transaction = _connection.BeginTransaction();
         }
-
+        //Этот метод используется для фиксации транзакции в базе данных.
+        //После успешного выполнения всех операций в рамках транзакции,
+        //вызов этого метода сохраняет все изменения в базе данных.
         public void CommitTransaction()
         {
             if (_transaction != null)
@@ -121,7 +129,8 @@ namespace WpfApp1.Models
             }
             CloseConnection();
         }
-
+        //Данный метод используется для отката транзакции в случае возникновения ошибки или отмены операций.
+        //Он отменяет все изменения, сделанные в рамках транзакции.
         public void RollbackTransaction()
         {
             if (_transaction != null)

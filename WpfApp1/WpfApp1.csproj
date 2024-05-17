@@ -107,7 +107,9 @@
     <Compile Include="Repositories\AssetRepository.cs" />
     <Compile Include="Repositories\BankMoneyAssetRepository.cs" />
     <Compile Include="Repositories\DiffrentMoneyAssetRepository.cs" />
+    <Compile Include="Repositories\InventoryAssetRepository.cs" />
     <Compile Include="Repositories\MoneyAssetRepository.cs" />
+    <Compile Include="Repositories\RealEstateAssetRepository.cs" />
     <Page Include="AddWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -49,23 +49,28 @@ namespace WpfApp1
         private TextBox quantityText;
         private const string NOTNULL = "Не должно быть пустых полей!";
 
-        //репозитории
+        //репозитории всех видов активов
         private MoneyAssetRepository _moneyAssetRepository;
         private BankMoneyAssetRepository _bankMoneyAssetRepository;
         private DifferentMoneyAssetRepository _differentMoneyAssetRepository;
-        //база данных
+        private InventoryAssetRepository _inventoryAssetRepository;
+        private RealEstateAssetRepository _realEstateAssetRepository;
+
+        //контекст базы данных со строкой подключения
         private DbContext dbContext;
-        string connectionString = "Server=localhost;Port=5433;Database=test;User Id=postgres;Password=12345;";
         public AddWindow()
         {
             InitializeComponent();
-            dbContext = new DbContext(connectionString);
+            dbContext = new DbContext();
             _moneyAssetRepository = new MoneyAssetRepository(dbContext);
             _bankMoneyAssetRepository = new BankMoneyAssetRepository(dbContext);
             _differentMoneyAssetRepository = new DifferentMoneyAssetRepository(dbContext);
+            _inventoryAssetRepository = new InventoryAssetRepository(dbContext);
+            _realEstateAssetRepository = new RealEstateAssetRepository(dbContext);
             control.ContentTemplate = this.GetDataTemplate(0);
         }
 
+       //метод который устанавливает шаблон с полями для нужного актива
         public void changeControl(DataTemplate template)
         {
             if (control != null)
@@ -75,6 +80,7 @@ namespace WpfApp1
             else return;
         }
 
+        //метод инициализации всех текстовых полей
         private void InitializeAllDynamicControls()
         {
             amountText = this.FindVisualChild<TextBox>("amount");
@@ -99,6 +105,8 @@ namespace WpfApp1
             changeControl(this.GetDataTemplate(type));
         }
 
+        //метод кнопки добавления актива, в зависимости от выбранного типа актива добавляет его в 
+        //нужный репозиторий.
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             int type = assetTypeComboBox.SelectedIndex;
@@ -114,7 +122,7 @@ namespace WpfApp1
             {
                 //денежные активы
                 case 0:
-                    
+           
                     if (!this.IsAnyStringEmptyOrNull(amountText.Text, curr))
                     {
                         decimal amount = decimal.Parse(amountText.Text);
@@ -170,7 +178,8 @@ namespace WpfApp1
                         int number = int.Parse(numberText.Text);
                         newAsset = new RealEstate(addres,constructType,curr,
                             year, number, init,marcet);
-                        //MainWindow.assets.Add(newAsset);
+                        _realEstateAssetRepository.AddAsset(newAsset);
+                        main.UpdateAssetList(); main.ShowDialog();
                         Hide();
                     }
                     else MessageBox.Show(NOTNULL);
@@ -186,7 +195,9 @@ namespace WpfApp1
                         string unit = unitText.Text;
                         string inventoryType = typeText.Text;
                         newAsset = new Inventory(inventoryType,unit,curr,quantity, init,marcet);
-                        //MainWindow.assets.Add(newAsset);
+                        _inventoryAssetRepository.AddAsset(newAsset);
+                        main.UpdateAssetList();
+                        main.ShowDialog();
                         Hide();
                     }
                     else MessageBox.Show(NOTNULL);

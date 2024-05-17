@@ -91,7 +91,7 @@ namespace WpfApp1.Models
             return string.Format("{0} {1} {2} начальная стоимость {3}, рыночная стоимость {4}, остаточная стоимость - {5}",
                 _quantity,_unit, _type, _initialValue,_marcetValue,_residualValue);
         }
-
+        //метод для получения остаточной суммы
         public override decimal GetResidualValue()
         {
             return _quantity * _marcetValue - _initialValue * _quantity;

@@ -8,10 +8,9 @@ using WpfApp1.Models;
 
 namespace WpfApp1.Repositories
 {
+    //Класс наследник AssetRepository, отвечает за работу с активами с твердым номиналом
     public class DifferentMoneyAssetRepository : AssetRepository
     {
-        private DbContext _dbContext;
-
         public DifferentMoneyAssetRepository(DbContext dbContext)
         {
             _dbContext = dbContext;

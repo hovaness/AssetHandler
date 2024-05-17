@@ -40,11 +40,15 @@ namespace WpfApp1
         public Asset Asset { get { return asset; } }
         private const string NOTNULL = "Не должно быть пустых полей!";
 
-        private MoneyAssetRepository _moneyAssetRepository;
-        private BankMoneyAssetRepository _bankMoneyAssetRepository;
-        private DifferentMoneyAssetRepository _differentMoneyAssetRepository;
+        //репозитории всех видов активов
+        MoneyAssetRepository _moneyAssetRepository;
+        BankMoneyAssetRepository _bankMoneyAssetRepository;
+        DifferentMoneyAssetRepository _differentMoneyAssetRepository;
+        InventoryAssetRepository _inventoryAssetRepository;
+        RealEstateAssetRepository _realEstateAssetRepository;
+
+        //контекст базы данных со строкой подключения
         private DbContext dbContext;
-        string connectionString = "Server=localhost;Port=5433;Database=test;User Id=postgres;Password=12345;";
 
         public ChangeWindow(Asset asset)
         {
@@ -52,12 +56,15 @@ namespace WpfApp1
             this.asset = asset;
             control.ContentTemplate = this.GetDataTemplate(asset);
             SetTypeName();
-            dbContext = new DbContext(connectionString);
+            dbContext = new DbContext();
             _moneyAssetRepository = new MoneyAssetRepository(dbContext);
             _bankMoneyAssetRepository = new BankMoneyAssetRepository(dbContext);
             _differentMoneyAssetRepository = new DifferentMoneyAssetRepository(dbContext);
+            _inventoryAssetRepository = new InventoryAssetRepository(dbContext);
+            _realEstateAssetRepository = new RealEstateAssetRepository(dbContext);
         }
         
+        //метод, который устанавливает цвет надписи в зависимости от типа актива
         private void SetTypeName()
         {
             Type type = asset.GetType();
@@ -88,8 +95,10 @@ namespace WpfApp1
             }
         }
 
+        //метод выполняющий редактирование какого-либо актива и сохранения его в базу данных
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            InitializeAllDynamicControls();
             Asset updated;
             var main = new MainWindow();
             if (asset is RealAsset)
@@ -99,11 +108,13 @@ namespace WpfApp1
                     if (!this.IsAnyStringEmptyOrNull(initialText.Text, marketText.Text, constructionYearText.Text, addresText.Text,
                         constructionTypeText.Text, numberText.Text, currText.Text))
                     {
-                        //MainWindow.assets.Remove(asset);
                         updated = new RealEstate(addresText.Text, constructionTypeText.Text, currText.Text, int.Parse(constructionYearText.Text),
                             int.Parse(numberText.Text), decimal.Parse(initialText.Text), decimal.Parse(marketText.Text));
-                        //MainWindow.assets.Add(updated);
+                        updated.Id = asset.Id;
+                        _realEstateAssetRepository.UpdateAsset(updated);
                         Hide();
+                        main.UpdateAssetList();
+                        main.ShowDialog();
                     }
                     else
                         MessageBox.Show(NOTNULL);
@@ -112,11 +123,13 @@ namespace WpfApp1
                 {
                     if(!this.IsAnyStringEmptyOrNull(initialText.Text, marketText.Text, unitText.Text, quantityText.Text, typeText.Text, currText.Text))
                     {
-                        //MainWindow.assets.Remove(asset);
                         updated = new Inventory(typeText.Text, unitText.Text, currText.Text, int.Parse(quantityText.Text),
                             decimal.Parse(initialText.Text), decimal.Parse(marketText.Text));
-                        //MainWindow.assets.Add(updated);
+                        updated.Id = asset.Id;
+                        _inventoryAssetRepository.UpdateAsset(updated);
                         Hide();
+                        main.UpdateAssetList();
+                        main.ShowDialog();
                     }
                     else
                         MessageBox.Show(NOTNULL);
@@ -160,7 +173,6 @@ namespace WpfApp1
                         updated = new Money(decimal.Parse(amountText.Text), currText.Text);
                         updated.Id = asset.Id;
                         _moneyAssetRepository.UpdateAsset(updated);
-                        //MessageBox.Show(updated.Id.ToString());
                         Hide();
                         main.UpdateAssetList();
                         main.ShowDialog();
@@ -170,7 +182,7 @@ namespace WpfApp1
                 }
             }
         }
-
+        //метод инициализации всех полей редактирования
         private void InitializeAllDynamicControls()
         {
             amountText = this.FindVisualChild<TextBox>("amount");
@@ -190,6 +202,7 @@ namespace WpfApp1
             quantityText = this.FindVisualChild<TextBox>("quantity");
         }
 
+        //метод для получения данных полей выбранного актива, необходим для начала редактирования
         private void GetInfo(object sender, RoutedEventArgs e)
         {
             InitializeAllDynamicControls();
